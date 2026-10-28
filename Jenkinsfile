@@ -2,36 +2,53 @@
 pipeline {
     agent any
 
+    options {
+        timestamps()
+    }
+
     stages {
         stage('Checkout') {
             steps {
-                echo 'Checking out Hoppscotch repository'
                 checkout scm
+                echo 'Repository checked out successfully'
+            }
+        }
+
+        stage('Environment') {
+            steps {
+                sh '''
+                    node --version
+                    corepack --version
+                    corepack pnpm --version
+                '''
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                sh '''
+                    corepack pnpm install --frozen-lockfile
+                '''
             }
         }
 
         stage('Validate') {
             steps {
-                echo 'Validating repository structure'
-
                 sh '''
                     test -f package.json
-                    test -f pnpm-workspace.yaml
+                    test -f pnpm-lock.yaml
                     echo "Repository validation passed"
                 '''
             }
         }
+    }
 
-        stage('Build') {
-            steps {
-                echo 'Build stage will be configured next'
-            }
+    post {
+        success {
+            echo 'CI Pipeline completed successfully!'
         }
-
-        stage('Deploy') {
-            steps {
-                echo 'Deployment to AWS EC2 will be configured later'
-            }
+        failure {
+            echo 'CI Pipeline failed. Check console output.'
         }
     }
 }

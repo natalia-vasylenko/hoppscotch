@@ -42,6 +42,26 @@ pipeline {
             }
         }
 
+       stage('Typecheck') {
+            steps {
+                echo 'Running TypeScript type checks'
+        
+                sh '''
+                    corepack pnpm typecheck
+                '''
+            }
+        }
+      
+       stage('Test') {
+            steps {
+                echo 'Running Hoppscotch tests'
+        
+                sh '''
+                    CI=true corepack pnpm test
+                '''
+            }
+        }
+
         stage('Validate') {
             steps {
                 sh '''

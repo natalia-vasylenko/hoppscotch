@@ -32,6 +32,16 @@ pipeline {
             }
         }
 
+        stage('Lint') {
+            steps {
+                echo 'Running Hoppscotch lint checks'
+        
+                sh '''
+                    corepack pnpm lint
+                '''
+            }
+        }
+
         stage('Validate') {
             steps {
                 sh '''

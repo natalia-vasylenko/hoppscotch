@@ -57,7 +57,15 @@ pipeline {
                 echo 'Running Hoppscotch tests'
         
                 sh '''
-                    CI=true corepack pnpm test
+                    CI=true corepack pnpm \
+                      --filter '!@hoppscotch/js-sandbox' \
+                      -r --if-present run do-test
+        
+                    CI=true corepack pnpm \
+                      --filter @hoppscotch/js-sandbox \
+                      exec vitest run \
+                      --maxWorkers=2 \
+                      --no-file-parallelism
                 '''
             }
         }

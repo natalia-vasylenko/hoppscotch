@@ -53,22 +53,30 @@ pipeline {
         }
       
        stage('Test') {
-            steps {
-                echo 'Running Hoppscotch tests'
-        
-                sh '''
-                    CI=true corepack pnpm \
-                      --filter '!@hoppscotch/js-sandbox' \
-                      -r --if-present run do-test
-        
-                    CI=true corepack pnpm \
-                      --filter @hoppscotch/js-sandbox \
-                      exec vitest run \
-                      --maxWorkers=2 \
-                      --no-file-parallelism
-                '''
-            }
-        }
+          steps {
+              echo 'Running Hoppscotch tests'
+      
+              sh '''
+                  CI=true corepack pnpm \
+                    --filter '!@hoppscotch/js-sandbox' \
+                    --filter '!@hoppscotch/common' \
+                    -r --if-present run do-test
+      
+                  CI=true corepack pnpm \
+                    --filter @hoppscotch/common \
+                    exec vitest run \
+                    --maxWorkers=1 \
+                    --no-file-parallelism \
+                    --testTimeout=30000
+      
+                  CI=true corepack pnpm \
+                    --filter @hoppscotch/js-sandbox \
+                    exec vitest run \
+                    --maxWorkers=2 \
+                    --no-file-parallelism
+              '''
+          }
+      }
       
         stage('Build') {
             steps {

@@ -222,6 +222,10 @@ EXPOSE 3170
 
 
 FROM base_builder AS fe_builder
+
+ARG VITE_BASE_URL
+ENV VITE_BASE_URL=${VITE_BASE_URL}
+
 WORKDIR /usr/src/app/packages/hoppscotch-selfhost-web
 RUN pnpm run generate
 # Group-writable (GID 0) so a non-root UID (OpenShift runs as GID 0) can rewrite

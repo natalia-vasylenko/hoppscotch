@@ -105,6 +105,7 @@ pipeline {
             }
         }
 
+      
       stage('Docker Build') {
           steps {
               echo 'Building Hoppscotch Docker image'
@@ -112,6 +113,7 @@ pipeline {
               sh '''
                   docker buildx build \
                     --platform linux/amd64 \
+                    --build-arg VITE_BASE_URL="${VITE_BASE_URL}" \
                     -f prod.Dockerfile \
                     --target aio \
                     -t hoppscotch-custom:${BUILD_NUMBER} \

@@ -2,6 +2,10 @@
 pipeline {
     agent any
 
+    environment {
+        VITE_BASE_URL = 'http://localhost:3000'
+    }
+
     options {
         timestamps()
     }

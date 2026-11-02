@@ -69,7 +69,19 @@ pipeline {
                 '''
             }
         }
-
+        stage('Build') {
+            steps {
+                echo 'Building Hoppscotch for production'
+        
+                sh '''
+                    CI=true corepack pnpm \
+                      -r \
+                      --workspace-concurrency=2 \
+                      run do-build-prod
+                ''''
+            }
+        }
+      
         stage('Validate') {
             steps {
                 sh '''

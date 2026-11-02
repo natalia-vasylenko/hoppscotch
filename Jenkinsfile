@@ -106,18 +106,20 @@ pipeline {
         }
 
       stage('Docker Build') {
-        steps {
-            echo 'Building Hoppscotch Docker image'
-    
-            sh '''
-                docker build \
-                  -f prod.Dockerfile \
-                  --target aio \
-                  -t hoppscotch-custom:${BUILD_NUMBER} \
-                  .
-            '''
-        }
-}
+          steps {
+              echo 'Building Hoppscotch Docker image'
+      
+              sh '''
+                  docker buildx build \
+                    --platform linux/amd64 \
+                    -f prod.Dockerfile \
+                    --target aio \
+                    -t hoppscotch-custom:${BUILD_NUMBER} \
+                    --load \
+                    .
+              '''
+          }
+      }
     }
 
     post {

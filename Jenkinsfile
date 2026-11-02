@@ -69,6 +69,7 @@ pipeline {
                 '''
             }
         }
+      
         stage('Build') {
             steps {
                 echo 'Building Hoppscotch for production'
@@ -78,7 +79,7 @@ pipeline {
                       -r \
                       --workspace-concurrency=2 \
                       run do-build-prod
-                ''''
+                '''
             }
         }
       

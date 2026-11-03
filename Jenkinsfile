@@ -134,19 +134,21 @@ pipeline {
                   passwordVariable: 'GHCR_TOKEN'
               )]) {
                   sh '''
-                      set -e
-      
-                      IMAGE="ghcr.io/natalia-vasylenko/hoppscotch"
-      
-                      echo "$GHCR_TOKEN" | docker login ghcr.io \
-                        -u "$GHCR_USER" \
-                        --password-stdin
-      
-                      docker tag hoppscotch-custom:${BUILD_NUMBER} \
-                        "$IMAGE:${BUILD_NUMBER}"
-      
-                      docker push "$IMAGE:${BUILD_NUMBER}"
-                  '''
+                        set -e
+                    
+                        IMAGE="ghcr.io/natalia-vasylenko/hoppscotch"
+                        export DOCKER_CONFIG="$(mktemp -d)"
+                        trap 'rm -rf "$DOCKER_CONFIG"' EXIT
+                    
+                        echo "$GHCR_TOKEN" | docker login ghcr.io \
+                          -u "$GHCR_USER" \
+                          --password-stdin
+                    
+                        docker tag hoppscotch-custom:${BUILD_NUMBER} \
+                          "$IMAGE:${BUILD_NUMBER}"
+                    
+                        docker push "$IMAGE:${BUILD_NUMBER}"
+                    '''
               }
           }
       }

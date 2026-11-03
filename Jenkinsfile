@@ -122,6 +122,35 @@ pipeline {
               '''
           }
       }
+
+      
+      stage('Docker Push') {
+          steps {
+              echo 'Publishing Hoppscotch Docker image to GHCR'
+      
+              withCredentials([usernamePassword(
+                  credentialsId: 'github-ghcr',
+                  usernameVariable: 'GHCR_USER',
+                  passwordVariable: 'GHCR_TOKEN'
+              )]) {
+                  sh '''
+                      set -e
+      
+                      IMAGE="ghcr.io/natalia-vasylenko/hoppscotch"
+      
+                      echo "$GHCR_TOKEN" | docker login ghcr.io \
+                        -u "$GHCR_USER" \
+                        --password-stdin
+      
+                      docker tag hoppscotch-custom:${BUILD_NUMBER} \
+                        "$IMAGE:${BUILD_NUMBER}"
+      
+                      docker push "$IMAGE:${BUILD_NUMBER}"
+                  '''
+              }
+          }
+      }
+
     }
 
     post {
